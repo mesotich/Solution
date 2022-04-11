@@ -2,18 +2,16 @@ package com.javarush.task.task39.task3905;
 
 public class PhotoPaint {
 
+    private Color replaceColor;
+
     public boolean paintFill(Color[][] image, int x, int y, Color desiredColor) {
-        if (image == null)
+        if (image == null || !checkBorder(image, x, y))
             return false;
-        Color color;
-        try {
-            color = image[y][x];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            return false;
-        }
+        Color color = image[y][x];
         if (color.equals(desiredColor))
             return false;
-        final Color replaceColor = ReplaceColor.getInstance(color);
+        if (replaceColor == null)
+            replaceColor = color;
         if (color.equals(replaceColor)) {
             image[y][x] = desiredColor;
             paintFill(image, x - 1, y, desiredColor);
@@ -24,18 +22,7 @@ public class PhotoPaint {
         return true;
     }
 
-    private static class ReplaceColor {
-
-        private static Color instance;
-
-        public static Color getInstance(Color color) {
-            if (instance == null) {
-                instance = color;
-            }
-            return instance;
-        }
-
-        private ReplaceColor() {
-        }
+    private boolean checkBorder(Color[][] image, int x, int y) {
+        return x >= 0 && y >= 0 && x < image[0].length && y < image.length;
     }
 }
